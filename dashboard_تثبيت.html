@@ -109,8 +109,8 @@
     <div class="icon">🔐</div>
     <h1>لوحة المشرف</h1>
     <p>اختبار التثبيت — ٢٠٢٦<br>أدخل رمز الدخول للمشرفين</p>
-    <input type="password" id="pin-input" placeholder="••••" maxlength="6" onkeydown="if(event.key==='Enter')LOGIN()">
-    <button class="btn btn-p" onclick="LOGIN()">دخول</button>
+    <input type="password" id="pin-input" placeholder="••••" maxlength="6">
+    <button class="btn btn-p" id="btn-login">دخول</button>
     <div class="err" id="pin-err">رمز غير صحيح. حاول مجدداً.</div>
   </div>
 </div>
@@ -120,7 +120,7 @@
   <div class="hdr">
     <div class="hdr-top">
       <h1>📊 لوحة المشرف — اختبار التثبيت</h1>
-      <button class="hdr-logout" onclick="LOGOUT()">خروج</button>
+      <button class="hdr-logout" id="btn-logout">خروج</button>
     </div>
     <div class="hdr-sub" id="hdr-time">جارٍ التحديث...</div>
   </div>
@@ -133,11 +133,11 @@
   </div>
 
   <div class="controls">
-    <input type="text" class="search-box" id="search" placeholder="🔍 ابحث باسم الطالب..." oninput="RENDER()">
-    <button class="filter-btn active" id="f-all" onclick="FILTER('all')">الكل</button>
-    <button class="filter-btn" id="f-pass" onclick="FILTER('pass')">الناجحون</button>
-    <button class="filter-btn" id="f-fail" onclick="FILTER('fail')">الراسبون</button>
-    <button class="reset-btn" onclick="RESET_CONFIRM()">🗑️ مسح النتائج</button>
+    <input type="text" class="search-box" id="search" placeholder="🔍 ابحث باسم الطالب...">
+    <button class="filter-btn active" id="f-all">الكل</button>
+    <button class="filter-btn" id="f-pass">الناجحون</button>
+    <button class="filter-btn" id="f-fail">الراسبون</button>
+    <button class="reset-btn" id="btn-reset">🗑️ مسح النتائج</button>
   </div>
 
   <div class="live-bar">
@@ -176,9 +176,9 @@ onValue(resultsRef, (snapshot) => {
   window._results = list;
   window._db_ref = ref;
   window._db = db;
-  RENDER();
-  UpdateStats(list);
-  UpdateTime();
+  if(typeof RENDER === 'function'){ RENDER(); }
+  if(typeof UpdateStats === 'function'){ UpdateStats(list); }
+  if(typeof UpdateTime === 'function'){ UpdateTime(); }
 });
 
 window._remove = remove;
@@ -361,3 +361,22 @@ function RESET_CONFIRM(){
         window._results = [];
         RENDER();
         UpdateStats([]);
+      });
+    }
+  }
+}
+
+// Attach all event listeners after DOM ready
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('btn-login').addEventListener('click', LOGIN);
+  document.getElementById('pin-input').addEventListener('keydown', function(e){ if(e.key==='Enter') LOGIN(); });
+  document.getElementById('btn-logout').addEventListener('click', LOGOUT);
+  document.getElementById('search').addEventListener('input', RENDER);
+  document.getElementById('f-all').addEventListener('click', function(){ FILTER('all'); });
+  document.getElementById('f-pass').addEventListener('click', function(){ FILTER('pass'); });
+  document.getElementById('f-fail').addEventListener('click', function(){ FILTER('fail'); });
+  document.getElementById('btn-reset').addEventListener('click', RESET_CONFIRM);
+});
+</script>
+</body>
+</html>
