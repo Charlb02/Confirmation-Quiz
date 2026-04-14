@@ -126,25 +126,21 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, set, push } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { getDatabase, ref, set, push } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
-// ═══════════════════════════════════════════════
-// FIREBASE CONFIG — Replace with your own config
-// ═══════════════════════════════════════════════
-  const firebaseConfig = {
-    apiKey: "AIzaSyDSCMq1feMv_MvN835UEngrE-WNnGCvVjs",
-    authDomain: "confirmation-quiz.firebaseapp.com",
-    databaseURL: "https://confirmation-quiz-default-rtdb.firebaseio.com",
-    projectId: "confirmation-quiz",
-    storageBucket: "confirmation-quiz.firebasestorage.app",
-    messagingSenderId: "348085458461",
-    appId: "1:348085458461:web:ef81a4badd8b5e534218f4"
-  };
-
+const firebaseConfig = {
+  apiKey: "AIzaSyDSCMq1feMv_MvN835UEngrE-WNnGCvVjs",
+  authDomain: "confirmation-quiz.firebaseapp.com",
+  databaseURL: "https://confirmation-quiz-default-rtdb.firebaseio.com",
+  projectId: "confirmation-quiz",
+  storageBucket: "confirmation-quiz.firebasestorage.app",
+  messagingSenderId: "348085458461",
+  appId: "1:348085458461:web:ef81a4badd8b5e534218f4"
+};
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db = getDatabase(app, "https://confirmation-quiz-default-rtdb.firebaseio.com");
 window._db = db;
 window._ref = ref;
 window._set = set;
