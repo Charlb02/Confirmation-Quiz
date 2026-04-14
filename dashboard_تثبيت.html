@@ -168,7 +168,7 @@ const firebaseConfig = {
     appId: "1:348085458461:web:ef81a4badd8b5e534218f4"
   };
 
-const app = initializeApp(FB_CONFIG);
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const resultsRef = ref(db, 'quiz_results');
 
@@ -364,10 +364,3 @@ function RESET_CONFIRM(){
         window._results = [];
         RENDER();
         UpdateStats([]);
-      });
-    }
-  }
-}
-</script>
-</body>
-</html>
