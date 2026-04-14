@@ -86,8 +86,8 @@
   <div class="welcome-sub">هذا الاختبار يتضمن <strong>١٥ سؤالاً</strong> حول الأسرار والروح القدس وسرّ التثبيت.<br>اقرأ كل سؤال بتمعّن وأجب بصدق.</div>
   <div class="card">
     <label for="student-name">اكتب اسمك الكامل</label>
-    <input type="text" id="student-name" placeholder="مثال: مريم يوسف" autocomplete="off" oninput="CHK()">
-    <button class="btn btn-primary" id="btn-start" disabled onclick="START()">ابدأ الاختبار ←</button>
+    <input type="text" id="student-name" placeholder="مثال: مريم يوسف" autocomplete="off">
+    <button class="btn btn-primary" id="btn-start" disabled>ابدأ الاختبار ←</button>
   </div>
 </div>
 
@@ -97,7 +97,7 @@
   <div class="q-counter" id="qctr">السؤال ١ من ١٥</div>
   <div id="q-area"></div>
   <div class="nav-btns">
-    <button class="btn-next" id="btn-next" disabled onclick="NEXT()">التالي ←</button>
+    <button class="btn-next" id="btn-next" disabled>التالي ←</button>
   </div>
 </div>
 
@@ -417,4 +417,15 @@ function ShowResult(correct, pct, pass, wrongQs){
 
 // Arabic numerals helper
 function AR(n){
-  return String(n).replace(/\d/g, d=>'٠١
+  return String(n).replace(/\d/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+// Attach event listeners after DOM ready
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('student-name').addEventListener('input', CHK);
+  document.getElementById('btn-start').addEventListener('click', START);
+  document.getElementById('btn-next').addEventListener('click', NEXT);
+});
+</script>
+</body>
+</html>
