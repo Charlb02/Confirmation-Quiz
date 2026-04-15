@@ -265,8 +265,31 @@ const QS = [
 // ═══════════════════════════════════════════
 let studentName = '';
 let curQ = 0;
-let answers = new Array(15).fill(null); // index of chosen option
+let answers = new Array(15).fill(null);
 let answered = new Array(15).fill(false);
+let SHUFFLED = []; // shuffled questions with shuffled options
+
+// Fisher-Yates shuffle
+function SHUFFLE(arr){
+  const a = [...arr];
+  for(let i = a.length-1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function PREPARE_QUESTIONS(){
+  // Shuffle question order
+  const shuffledQs = SHUFFLE(QS);
+  // For each question, shuffle its options and track new correct answer index
+  SHUFFLED = shuffledQs.map(q => {
+    const indices = SHUFFLE([0,1,2,3]);
+    const newOptions = indices.map(i => q.o[i]);
+    const newCorrect = indices.indexOf(q.a);
+    return { ...q, o: newOptions, a: newCorrect };
+  });
+}
 
 // ═══════════════════════════════════════════
 // HELPERS
@@ -284,12 +307,13 @@ function START(){
   curQ = 0;
   answers = new Array(15).fill(null);
   answered = new Array(15).fill(false);
+  PREPARE_QUESTIONS();
   SHW('scr-quiz');
   RenderQ();
 }
 
 function RenderQ(){
-  const q = QS[curQ];
+  const q = SHUFFLED[curQ];
   const pct = (curQ / 15) * 100;
   $('qpf').style.width = pct + '%';
   $('qctr').textContent = 'السؤال ' + AR(curQ+1) + ' من ١٥';
@@ -306,7 +330,7 @@ function RenderQ(){
     } else if(answers[curQ] === i){
       cls += ' selected';
     }
-    html += `<button class="${cls}" onclick="SEL(${i})">${opt}</button>`;
+    html += `<button class="${cls}" data-idx="${i}">${opt}</button>`;
   });
 
   html += `<div class="q-feedback ${answered[curQ]?'show':''}" id="fb">${q.fb}</div>`;
@@ -340,19 +364,19 @@ function NEXT(){
 
 function SUBMIT(){
   SHW('scr-submit');
-  const correct = answers.filter((a,i)=> a === QS[i].a).length;
+  const correct = answers.filter((a,i)=> a === SHUFFLED[i].a).length;
   const pct = Math.round((correct/15)*100);
   const pass = pct >= 60;
 
   // Build wrong questions list
   const wrongQs = [];
   answers.forEach((a,i)=>{
-    if(a !== QS[i].a){
+    if(a !== SHUFFLED[i].a){
       wrongQs.push({
         num: i+1,
-        q: QS[i].q,
-        chosen: QS[i].o[a],
-        correct: QS[i].o[QS[i].a]
+        q: SHUFFLED[i].q,
+        chosen: SHUFFLED[i].o[a],
+        correct: SHUFFLED[i].o[SHUFFLED[i].a]
       });
     }
   });
@@ -425,6 +449,11 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('student-name').addEventListener('input', CHK);
   document.getElementById('btn-start').addEventListener('click', START);
   document.getElementById('btn-next').addEventListener('click', NEXT);
+  // Delegated click for answer options (generated dynamically)
+  document.getElementById('q-area').addEventListener('click', function(e){
+    const btn = e.target.closest('button.opt');
+    if(btn) SEL(parseInt(btn.dataset.idx));
+  });
 });
 </script>
 </body>
