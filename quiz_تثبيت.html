@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>اختبار التثبيت</title>
+<title>اختبار التثبيت — Confirmation Quiz</title>
 <style>
   :root {
     --p:#6C3483;--ps:#9B59B6;--pl:#D7BDE2;--a:#E67E22;--as:#F39C12;
@@ -12,21 +12,23 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:40px}
-  /* HEADER */
   .hdr{background:linear-gradient(135deg,var(--p),var(--ps));color:#fff;padding:18px 20px 22px;text-align:center;position:relative}
   .hdr h1{font-size:22px;font-weight:800;margin-bottom:4px}
   .hdr p{font-size:14px;opacity:.85}
-  /* SCREENS */
   .scr{display:none;padding:20px;max-width:600px;margin:0 auto}
   .scr.active{display:block}
-  /* CARD */
   .card{background:var(--card);border-radius:var(--rad);padding:20px;margin-bottom:16px;box-shadow:0 2px 10px rgba(108,52,131,.08);border:1px solid var(--brd)}
+  /* LANGUAGE PICKER */
+  .lang-pick{display:flex;gap:14px;margin-top:16px}
+  .lang-btn{flex:1;padding:20px 10px;border:3px solid var(--brd);border-radius:16px;background:var(--card);font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;transition:.15s;color:var(--tx);text-align:center}
+  .lang-btn:hover{border-color:var(--p);background:#f4ecfa}
+  .lang-btn .flag{font-size:36px;display:block;margin-bottom:6px}
   /* NAME SCREEN */
   .welcome-icon{font-size:60px;text-align:center;margin:20px 0 10px}
   .welcome-title{font-size:22px;font-weight:800;text-align:center;color:var(--p);margin-bottom:8px}
   .welcome-sub{font-size:15px;color:var(--txl);text-align:center;margin-bottom:24px;line-height:1.6}
   label{display:block;font-size:15px;font-weight:700;color:var(--p);margin-bottom:8px}
-  input[type=text]{width:100%;padding:14px 16px;border:2px solid var(--brd);border-radius:12px;font-size:17px;font-family:inherit;color:var(--tx);background:#fafafa;transition:.2s;text-align:right}
+  input[type=text]{width:100%;padding:14px 16px;border:2px solid var(--brd);border-radius:12px;font-size:17px;font-family:inherit;color:var(--tx);background:#fafafa;transition:.2s}
   input[type=text]:focus{outline:none;border-color:var(--p);background:#fff}
   .btn{display:block;width:100%;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:800;font-family:inherit;cursor:pointer;transition:.15s;margin-top:12px}
   .btn-primary{background:linear-gradient(135deg,var(--p),var(--ps));color:#fff}
@@ -39,7 +41,7 @@
   .q-card{background:var(--card);border-radius:var(--rad);padding:20px;margin-bottom:16px;box-shadow:0 2px 10px rgba(108,52,131,.1);border:2px solid var(--brd)}
   .q-emoji{font-size:32px;text-align:center;margin-bottom:10px}
   .q-text{font-size:18px;font-weight:700;color:var(--tx);text-align:center;margin-bottom:18px;line-height:1.5}
-  .opt{display:block;width:100%;padding:14px 16px;margin-bottom:10px;border:2px solid var(--brd);border-radius:12px;background:#fafafa;font-size:16px;font-family:inherit;color:var(--tx);cursor:pointer;text-align:right;transition:.15s;line-height:1.4}
+  .opt{display:block;width:100%;padding:14px 16px;margin-bottom:10px;border:2px solid var(--brd);border-radius:12px;background:#fafafa;font-size:16px;font-family:inherit;color:var(--tx);cursor:pointer;transition:.15s;line-height:1.4}
   .opt:active{transform:scale(.98)}
   .opt.selected{border-color:var(--p);background:#f0e8f8;font-weight:700}
   .opt.correct{border-color:var(--g);background:#d5f5e3;color:var(--g);font-weight:700}
@@ -49,9 +51,9 @@
   .nav-btns{display:flex;gap:10px;margin-top:4px}
   .btn-next{flex:1;padding:14px;border:none;border-radius:12px;background:var(--p);color:#fff;font-size:17px;font-weight:800;font-family:inherit;cursor:pointer;transition:.15s}
   .btn-next:disabled{opacity:.35;cursor:default}
-  /* SUBMIT SCREEN */
-  .submit-info{background:#f0e8f8;border-radius:12px;padding:14px;margin-bottom:16px;font-size:15px;color:var(--p);font-weight:700;text-align:center}
-  /* RESULT SCREEN */
+  .loading{text-align:center;padding:40px;color:var(--txl);font-size:16px}
+  .spinner{width:36px;height:36px;border:4px solid var(--brd);border-top-color:var(--p);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
   .result-icon{font-size:70px;text-align:center;margin:10px 0}
   .result-score{font-size:48px;font-weight:900;text-align:center;color:var(--p);margin:8px 0}
   .result-label{font-size:18px;font-weight:700;text-align:center;margin-bottom:16px}
@@ -60,44 +62,45 @@
   .wrong-list{margin-top:4px}
   .wrong-item{background:#fadbd8;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;color:#922B21;line-height:1.5}
   .wrong-item strong{display:block;margin-bottom:3px;font-size:15px}
-  /* LOADING */
-  .loading{text-align:center;padding:40px;color:var(--txl);font-size:16px}
-  .spinner{width:36px;height:36px;border:4px solid var(--brd);border-top-color:var(--p);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  /* ALREADY SUBMITTED */
-  .already-done{text-align:center;padding:30px 20px}
-  .already-done .big{font-size:50px;margin-bottom:12px}
-  .already-done h2{font-size:20px;color:var(--p);margin-bottom:8px}
-  .already-done p{font-size:15px;color:var(--txl);line-height:1.6}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="hdr">
-  <h1>🕊️ اختبار التثبيت</h1>
-  <p>سرّ الميرون — تحضير ٢٠٢٦</p>
+  <h1>🕊️ اختبار التثبيت — Confirmation Quiz</h1>
+  <p>سرّ الميرون — Sacrament of Confirmation — ٢٠٢٦</p>
+</div>
+
+<!-- SCREEN 0: LANGUAGE PICKER -->
+<div class="scr active" id="scr-lang">
+  <div class="welcome-icon">🌐</div>
+  <div class="welcome-title" style="margin-bottom:6px">اختر لغة الاختبار</div>
+  <div class="welcome-title" style="font-size:17px;color:var(--txl);font-weight:500;margin-bottom:20px">Choose your quiz language</div>
+  <div class="lang-pick">
+    <button class="lang-btn" id="btn-lang-ar"><span class="flag">🇱🇧</span>عربي</button>
+    <button class="lang-btn" id="btn-lang-en"><span class="flag">🇬🇧</span>English</button>
+  </div>
 </div>
 
 <!-- SCREEN 1: NAME ENTRY -->
-<div class="scr active" id="scr-name">
+<div class="scr" id="scr-name">
   <div class="welcome-icon">✝️</div>
-  <div class="welcome-title">أهلاً بك في اختبار التثبيت</div>
-  <div class="welcome-sub">هذا الاختبار يتضمن <strong>١٥ سؤالاً</strong> حول الأسرار والروح القدس وسرّ التثبيت.<br>اقرأ كل سؤال بتمعّن وأجب بصدق.</div>
+  <div class="welcome-title" id="wt"></div>
+  <div class="welcome-sub" id="ws"></div>
   <div class="card">
-    <label for="student-name">اكتب اسمك الكامل</label>
-    <input type="text" id="student-name" placeholder="مثال: مريم يوسف" autocomplete="off">
-    <button class="btn btn-primary" id="btn-start" disabled>ابدأ الاختبار ←</button>
+    <label for="student-name" id="lbl-name"></label>
+    <input type="text" id="student-name" autocomplete="off">
+    <button class="btn btn-primary" id="btn-start" disabled></button>
   </div>
 </div>
 
 <!-- SCREEN 2: QUIZ -->
 <div class="scr" id="scr-quiz">
   <div class="q-progress-bar"><div class="q-progress-fill" id="qpf" style="width:0%"></div></div>
-  <div class="q-counter" id="qctr">السؤال ١ من ١٥</div>
+  <div class="q-counter" id="qctr"></div>
   <div id="q-area"></div>
   <div class="nav-btns">
-    <button class="btn-next" id="btn-next" disabled>التالي ←</button>
+    <button class="btn-next" id="btn-next" disabled></button>
   </div>
 </div>
 
@@ -105,7 +108,7 @@
 <div class="scr" id="scr-submit">
   <div class="loading">
     <div class="spinner"></div>
-    <p>يتم حفظ إجاباتك...</p>
+    <p id="saving-txt"></p>
   </div>
 </div>
 
@@ -116,11 +119,11 @@
   <div class="result-label" id="res-label"></div>
   <div id="res-badge"></div>
   <div class="card" id="res-wrong-card" style="display:none">
-    <h3 style="font-size:16px;color:var(--r);margin-bottom:10px">❌ الأسئلة التي تحتاج مراجعة:</h3>
+    <h3 id="wrong-hdr" style="font-size:16px;color:var(--r);margin-bottom:10px"></h3>
     <div class="wrong-list" id="res-wrong-list"></div>
   </div>
   <div class="card" style="text-align:center;background:#d5f5e3;border-color:#1e8449">
-    <p style="font-size:15px;color:var(--g);line-height:1.6">✅ تم حفظ نتيجتك. شكراً على مشاركتك في الاختبار!</p>
+    <p id="saved-txt" style="font-size:15px;color:var(--g);line-height:1.6"></p>
   </div>
 </div>
 
@@ -150,7 +153,57 @@ window._FB_READY = true;
 
 <script>
 // ═══════════════════════════════════════════
-// QUIZ DATA — 15 Questions
+// UI STRINGS
+// ═══════════════════════════════════════════
+const T = {
+  ar: {
+    welcomeTitle: 'أهلاً بك في اختبار التثبيت',
+    welcomeSub: 'هذا الاختبار يتضمن <strong>١٥ سؤالاً</strong> حول الأسرار والروح القدس وسرّ التثبيت.<br>اقرأ كل سؤال بتمعّن وأجب بصدق.',
+    labelName: 'اكتب اسمك الكامل',
+    placeholder: 'مثال: مريم يوسف',
+    btnStart: 'ابدأ الاختبار ←',
+    btnNext: 'التالي ←',
+    btnFinish: 'إنهاء الاختبار ✓',
+    counter: (n,t) => 'السؤال ' + AR(n) + ' من ' + AR(t),
+    saving: 'يتم حفظ إجاباتك...',
+    resultLabel: (pct) => 'النتيجة: ' + AR(pct) + '%',
+    pass: '✅ ناجح — أحسنت!',
+    fail: '❌ لم تتجاوز الحد الأدنى — راجع المواد وحاول مجدداً',
+    wrongHdr: '❌ الأسئلة التي تحتاج مراجعة:',
+    yourAns: 'إجابتك',
+    correct: 'الصحيح',
+    saved: '✅ تم حفظ نتيجتك. شكراً على مشاركتك في الاختبار!',
+    qPrefix: 'س',
+    dir: 'rtl',
+    lang: 'ar',
+    optAlign: 'right'
+  },
+  en: {
+    welcomeTitle: 'Welcome to the Confirmation Quiz',
+    welcomeSub: 'This quiz contains <strong>15 questions</strong> about the Sacraments, the Holy Spirit, and the Sacrament of Confirmation.<br>Read each question carefully and answer honestly.',
+    labelName: 'Enter your full name',
+    placeholder: 'e.g. Mary Joseph',
+    btnStart: 'Start Quiz →',
+    btnNext: 'Next →',
+    btnFinish: 'Finish Quiz ✓',
+    counter: (n,t) => 'Question ' + n + ' of ' + t,
+    saving: 'Saving your answers...',
+    resultLabel: (pct) => 'Score: ' + pct + '%',
+    pass: '✅ Passed — Well done!',
+    fail: '❌ Below the passing mark — review the material and try again',
+    wrongHdr: '❌ Questions to review:',
+    yourAns: 'Your answer',
+    correct: 'Correct answer',
+    saved: '✅ Your result has been saved. Thank you for taking the quiz!',
+    qPrefix: 'Q',
+    dir: 'ltr',
+    lang: 'en',
+    optAlign: 'left'
+  }
+};
+
+// ═══════════════════════════════════════════
+// QUIZ DATA — 15 Questions (AR + EN)
 // ═══════════════════════════════════════════
 const QS = [
   {
@@ -158,118 +211,202 @@ const QS = [
     q:'كم عدد أسرار الكنيسة الكاثوليكية؟',
     o:['٥','٧','١٢','٣'],
     a:1,
-    fb:'الأسرار السبعة: العماد، الإفخارستيا، التثبيت، التوبة، الزواج، الكهنوت، مسحة المرضى.'
+    fb:'الأسرار السبعة: العماد، الإفخارستيا، التثبيت، التوبة، الزواج، الكهنوت، مسحة المرضى.',
+    en:{
+      q:'How many Sacraments does the Catholic Church have?',
+      o:['5','7','12','3'],
+      fb:'The Seven Sacraments are: Baptism, the Eucharist, Confirmation, Penance, Matrimony, Holy Orders, and Anointing of the Sick. (CCC 1113)'
+    }
   },
   {
     e:'🕊️',
     q:'ما هو سرّ التثبيت (الميرون)؟',
     o:['سرّ تناول جسد المسيح ودمه','سرّ ننال فيه هبة الروح القدس كاملاً ونُختم بختمه الأبدي','سرّ غفران الخطايا','سرّ الانتماء للكنيسة لأول مرة'],
     a:1,
-    fb:'في التثبيت يمسح الأسقف جبهتنا بالميرون قائلاً: "اِقبل وَسم موهبة الروح القدس". هذا الختم يُكرّسنا شهوداً للمسيح إلى الأبد.'
+    fb:'في التثبيت يمسح الأسقف جبهتنا بالميرون قائلاً: "اِقبل وَسم موهبة الروح القدس". هذا الختم يُكرّسنا شهوداً للمسيح إلى الأبد.',
+    en:{
+      q:'What is the Sacrament of Confirmation?',
+      o:['Receiving the Body and Blood of Christ','The sacrament in which we receive the fullness of the Holy Spirit and are sealed with His eternal seal','The sacrament of the forgiveness of sins','Becoming a member of the Church for the first time'],
+      fb:'In Confirmation, the bishop anoints our forehead with sacred chrism saying: "Be sealed with the Gift of the Holy Spirit." This seal configures us more deeply to Christ and strengthens us as His witnesses. (CCC 1285, 1303)'
+    }
   },
   {
     e:'🌊',
     q:'ما هي أسرار البداية المسيحية الثلاثة؟',
     o:['العماد والكهنوت والزواج','العماد والإفخارستيا والتثبيت','التوبة والمناولة والتثبيت','العماد والتوبة والزواج'],
     a:1,
-    fb:'العماد يمنحنا الحياة الإلهية، الإفخارستيا تُغذّيها، والتثبيت يُنضجها ويجعلنا شهوداً كاملين للمسيح.'
+    fb:'العماد يمنحنا الحياة الإلهية، الإفخارستيا تُغذّيها، والتثبيت يُنضجها ويجعلنا شهوداً كاملين للمسيح.',
+    en:{
+      q:'What are the three Sacraments of Christian Initiation?',
+      o:['Baptism, Holy Orders, and Matrimony','Baptism, the Eucharist, and Confirmation','Penance, Communion, and Confirmation','Baptism, Penance, and Matrimony'],
+      fb:'The three Sacraments of Christian Initiation are Baptism, the Eucharist, and Confirmation. Baptism gives us divine life; the Eucharist nourishes it; and Confirmation matures it, strengthening us as full witnesses of Christ. (CCC 1285)'
+    }
   },
   {
     e:'✝️',
     q:'ماذا يقول الأسقف عند مسح جبهة المثبَّت بالميرون؟',
     o:['"خذ الروح القدس وكن قوياً"','"باسم الآب والابن والروح القدس"','"اِقبل وَسم موهبة الروح القدس"','"أنت الآن مسيحي كامل"'],
     a:2,
-    fb:'هذه الكلمات تُعلن استقبال المثبَّت لختم الروح القدس الأبدي. وجواب المثبَّت يكون: "آمين."'
+    fb:'هذه الكلمات تُعلن استقبال المثبَّت لختم الروح القدس الأبدي. وجواب المثبَّت يكون: "آمين."',
+    en:{
+      q:'What does the bishop say when anointing the forehead of the one being confirmed?',
+      o:['"Receive the Holy Spirit and be strong"','"In the name of the Father, and of the Son, and of the Holy Spirit"','"Be sealed with the Gift of the Holy Spirit"','"You are now a complete Christian"'],
+      fb:'"Be sealed with the Gift of the Holy Spirit" is the essential sacramental formula of Confirmation in the Roman Rite. The one being confirmed responds: "Amen." (CCC 1300)'
+    }
   },
   {
     e:'🙌',
     q:'ماذا يطلب الأسقف من طالب التثبيت قبل إعلان إيمانه؟',
     o:['أن يُصلّي صلاة خاصة','أن يكفر بالشيطان وبجميع أعماله ومُغرياته','أن يُقدّم هدية للكنيسة','أن يحفظ قانون الإيمان'],
     a:1,
-    fb:'الأسقف يسأل: "أتَكفرون بالشيطان وبجميع أعماله ومُغرياته؟" — الطالب يُجيب: "نعم، نكفر." ثم يُعلن إيمانه بالثالوث.'
+    fb:'الأسقف يسأل: "أتَكفرون بالشيطان وبجميع أعماله ومُغرياته؟" — الطالب يُجيب: "نعم، نكفر." ثم يُعلن إيمانه بالثالوث.',
+    en:{
+      q:'What does the bishop ask of the candidate before they profess their faith?',
+      o:['To pray a special prayer','To renounce Satan and all his works and empty promises','To bring a gift for the Church','To memorise the Creed'],
+      fb:'The bishop asks: "Do you renounce Satan and all his works and all his empty promises?" The candidate answers: "I do." This renewal of baptismal promises is a key part of the Confirmation rite. (CCC 1298)'
+    }
   },
   {
     e:'💬',
     q:'ما هو جواب المثبَّت بعد أن يقول الأسقف "السلام لك"؟',
     o:['"شكراً لك"','"ومع روحك أيضاً"','"آمين"','"نعم، أومن"'],
     a:1,
-    fb:'الحوار الكامل: الأسقف: "اِقبل وَسم موهبة الروح القدس" — المثبَّت: "آمين." ثم الأسقف: "السلام لك" — المثبَّت: "ومع روحك أيضاً."'
+    fb:'الحوار الكامل: الأسقف: "اِقبل وَسم موهبة الروح القدس" — المثبَّت: "آمين." ثم الأسقف: "السلام لك" — المثبَّت: "ومع روحك أيضاً."',
+    en:{
+      q:'What does the confirmed person respond after the bishop says "Peace be with you"?',
+      o:['"Thank you"','"And with your spirit"','"Amen"','"Yes, I believe"'],
+      fb:'The full exchange: Bishop: "Be sealed with the Gift of the Holy Spirit" — Candidate: "Amen." Then Bishop: "Peace be with you" — Candidate: "And with your spirit." This exchange is part of the sacred liturgy of the sacrament.'
+    }
   },
   {
     e:'🔐',
     q:'متى يُمحى ختم الروح القدس الذي ننال في التثبيت؟',
     o:['بعد ٧ سنوات','عند ارتكاب خطيئة كبيرة','لا يُمحى أبداً — هو ختم أبدي','عند الزواج'],
     a:2,
-    fb:'ختم الروح القدس لا يُمحى أبداً. حتى لو ابتعدنا عن الله، يبقى هذا الختم شاهداً على أننا ننتمي للمسيح.'
+    fb:'ختم الروح القدس لا يُمحى أبداً. حتى لو ابتعدنا عن الله، يبقى هذا الختم شاهداً على أننا ننتمي للمسيح.',
+    en:{
+      q:'When does the seal of the Holy Spirit received in Confirmation fade away?',
+      o:['After 7 years','When a mortal sin is committed','It never fades — it is an eternal seal','At the time of marriage'],
+      fb:'The seal of the Holy Spirit in Confirmation is permanent and indelible. Even if we drift from God, this seal remains as a witness that we belong to Christ. Confirmation can only be received once. (CCC 1304–1305)'
+    }
   },
   {
     e:'📝',
     q:'ما الفرق الجوهري بين يوم المعمودية ويوم التثبيت فيما يخص الإيمان؟',
     o:['لا فرق بينهما','يوم المعمودية أجاب الآخرون عن الطفل — أما يوم التثبيت فالطالب يُجيب بنفسه بوعي وحرية','التثبيت يُلغي المعمودية','المعمودية أهم من التثبيت'],
     a:1,
-    fb:'هذا الفرق الجوهري يجعل التثبيت نضجاً مسيحياً حقيقياً — أنت تختار إيمانك بنفسك وتُعلنه بصوتك أمام الكنيسة والأسقف!'
+    fb:'هذا الفرق الجوهري يجعل التثبيت نضجاً مسيحياً حقيقياً — أنت تختار إيمانك بنفسك وتُعلنه بصوتك أمام الكنيسة والأسقف!',
+    en:{
+      q:'What is the key difference between Baptism and Confirmation regarding the profession of faith?',
+      o:['There is no difference','At Baptism others answered on behalf of the infant — at Confirmation the candidate personally and freely professes their own faith','Confirmation cancels Baptism','Baptism is more important than Confirmation'],
+      fb:'At Baptism, godparents professed faith on behalf of the infant. At Confirmation, the candidate personally renews their baptismal promises and freely professes their faith. This is what makes Confirmation the sacrament of Christian maturity. (CCC 1308)'
+    }
   },
   {
     e:'🔥',
     q:'بأي شكل ظهر الروح القدس على الرسل يوم العنصرة؟',
     o:['حمامة بيضاء','ماء متدفق','ألسنة نار وريح عاصفة','سحاب وضباب'],
     a:2,
-    fb:'"ظهرت لهم ألسنة منقسمة كأنها من نار وجلست على كل واحد منهم" (أعمال ٢: ٣). النار ترمز لحرارة الإيمان وقوة الروح القدس.'
+    fb:'"ظهرت لهم ألسنة منقسمة كأنها من نار وجلست على كل واحد منهم" (أعمال ٢: ٣). النار ترمز لحرارة الإيمان وقوة الروح القدس.',
+    en:{
+      q:'In what form did the Holy Spirit appear to the Apostles on the day of Pentecost?',
+      o:['A white dove','Flowing water','Tongues of fire and a mighty wind','A cloud and mist'],
+      fb:'"There appeared to them tongues as of fire, distributed and resting on each one of them." (Acts 2:3). The fire symbolises the transforming power of the Holy Spirit. Confirmation is our personal Pentecost.'
+    }
   },
   {
     e:'🎁',
     q:'أيٌّ من هذه هو موهبة من مواهب الروح القدس؟',
     o:['المحبة','الفرح','المشورة','الصبر'],
     a:2,
-    fb:'المواهب السبعة هي: الحكمة، الفهم، المشورة، القوة، العلم، التقوى، مخافة الله. أما المحبة والفرح والصبر فهي ثمار الروح القدس وليست مواهب.'
+    fb:'المواهب السبعة هي: الحكمة، الفهم، المشورة، القوة، العلم، التقوى، مخافة الله. أما المحبة والفرح والصبر فهي ثمار الروح القدس وليست مواهب.',
+    en:{
+      q:'Which of the following is a Gift of the Holy Spirit?',
+      o:['Charity (Love)','Joy','Counsel','Patience'],
+      fb:'The seven Gifts of the Holy Spirit are: Wisdom, Understanding, Counsel, Fortitude, Knowledge, Piety, and Fear of the Lord (Isaiah 11:2-3; CCC 1831). Charity, Joy, and Patience are Fruits of the Holy Spirit, not Gifts.'
+    }
   },
   {
     e:'🎁',
     q:'أيٌّ من هذه ليس من مواهب الروح القدس؟',
     o:['الحكمة','التقوى','الوداعة','مخافة الله'],
     a:2,
-    fb:'الوداعة هي ثمرة من ثمار الروح القدس (غلاطية ٥)، وليست موهبة. المواهب السبعة هي: الحكمة، الفهم، المشورة، القوة، العلم، التقوى، مخافة الله.'
+    fb:'الوداعة هي ثمرة من ثمار الروح القدس (غلاطية ٥)، وليست موهبة. المواهب السبعة هي: الحكمة، الفهم، المشورة، القوة، العلم، التقوى، مخافة الله.',
+    en:{
+      q:'Which of the following is NOT a Gift of the Holy Spirit?',
+      o:['Wisdom','Piety','Gentleness','Fear of the Lord'],
+      fb:'Gentleness is a Fruit of the Holy Spirit (Galatians 5:22-23; CCC 1832), not a Gift. The seven Gifts are: Wisdom, Understanding, Counsel, Fortitude, Knowledge, Piety, and Fear of the Lord. (CCC 1831)'
+    }
   },
   {
     e:'🍇',
     q:'كم عدد ثمار الروح القدس كما ذكرها بولس الرسول في رسالته للغلاطيين؟',
     o:['سبعة','ثمانية','تسعة','اثنا عشر'],
     a:2,
-    fb:'التسعة ثمار: المحبة والفرح والسلام والصبر واللطف والصلاح والإيمان والوداعة والعفاف (غلاطية ٥: ٢٢-٢٣).'
+    fb:'التسعة ثمار: المحبة والفرح والسلام والصبر واللطف والصلاح والإيمان والوداعة والعفاف (غلاطية ٥: ٢٢-٢٣).',
+    en:{
+      q:'How many Fruits of the Holy Spirit does St Paul list in his letter to the Galatians?',
+      o:['Seven','Eight','Nine','Twelve'],
+      fb:'St Paul lists nine Fruits of the Holy Spirit: "love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control." (Galatians 5:22-23; CCC 1832)'
+    }
   },
   {
     e:'🤍',
     q:'ما هي الخطوات الصحيحة لممارسة سرّ التوبة؟',
     o:['الاعتراف للكاهن فقط','فحص الضمير، الندم، العزم على عدم العودة، الاعتراف للكاهن','الصلاة الخاصة بدون كاهن تكفي','الاعتراف ثم فحص الضمير'],
     a:1,
-    fb:'الترتيب الصحيح: فحص الضمير ← الندم الحقيقي ← العزم على التغيير ← الاعتراف للكاهن ← تنفيذ الكفارة.'
+    fb:'الترتيب الصحيح: فحص الضمير ← الندم الحقيقي ← العزم على التغيير ← الاعتراف للكاهن ← تنفيذ الكفارة.',
+    en:{
+      q:'What are the correct steps for the Sacrament of Penance (Confession)?',
+      o:['Going to the priest only','Examination of conscience, contrition, firm purpose of amendment, confession to the priest','Personal prayer at home is sufficient','Confession first, then examination of conscience'],
+      fb:'The correct order is: Examination of conscience → Contrition (sorrow for sin) → Firm purpose of amendment → Confession to the priest → Absolution → Satisfaction (penance). (CCC 1450–1460)'
+    }
   },
   {
     e:'🍞',
     q:'في التحول الجوهري في القداس، ماذا يحدث للخبز والخمر؟',
     o:['يتغيّر شكلهما ولونهما','يصبح جسد المسيح ودمه الحقيقيين مع بقاء شكل الخبز والخمر','يُصبحان رمزاً للمسيح فقط','يختفيان تماماً'],
     a:1,
-    fb:'معجزة في كل قداس: الجوهر يتحوّل (الخبز يصبح جسد المسيح، الخمر يصبح دمه) مع بقاء الشكل الخارجي.'
+    fb:'معجزة في كل قداس: الجوهر يتحوّل (الخبز يصبح جسد المسيح، الخمر يصبح دمه) مع بقاء الشكل الخارجي.',
+    en:{
+      q:'In the Transubstantiation at Mass, what happens to the bread and wine?',
+      o:['Their appearance and colour change','They become the true Body and Blood of Christ while the outward appearances of bread and wine remain','They become only a symbol of Christ','They disappear entirely'],
+      fb:'Transubstantiation means the entire substance of the bread and wine is converted into the Body and Blood of Christ, while only the appearances (species) of bread and wine remain. This is the Real Presence. (CCC 1374–1377)'
+    }
   },
   {
     e:'🌍',
     q:'ماذا يعني أن الإنسان يُجدّد عهود عماده يوم التثبيت؟',
     o:['يتعمّد من جديد','يُعيد الاعتراف عن كل ذنوبه','يُعلن إيمانه بنفسه بوعي وحرية كمسيحي ناضج','يبدأ حياة مسيحية جديدة كلياً'],
     a:2,
-    fb:'يوم معموديتك كان الآخرون يُجيبون عنك كطفل. اليوم أنت تختار الله بنفسك، تكفر بالشيطان وتُعلن إيمانك — هذا هو قلب سرّ التثبيت!'
+    fb:'يوم معموديتك كان الآخرون يُجيبون عنك كطفل. اليوم أنت تختار الله بنفسك، تكفر بالشيطان وتُعلن إيمانك — هذا هو قلب سرّ التثبيت!',
+    en:{
+      q:'What does it mean to renew one\'s baptismal promises at Confirmation?',
+      o:['Being baptised again','Making a new confession of all past sins','Personally and freely professing one\'s faith as a mature Christian','Starting an entirely new Christian life'],
+      fb:'At your Baptism, your godparents professed faith on your behalf as an infant. At Confirmation you personally renounce sin and profess your faith before the bishop and the Church — this free, conscious act is the heart of the sacrament. (CCC 1308)'
+    }
   }
 ];
+
+const TOTAL = 15;
 
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
+let LANG = 'ar';
 let studentName = '';
 let curQ = 0;
-let answers = new Array(15).fill(null);
-let answered = new Array(15).fill(false);
-let SHUFFLED = []; // shuffled questions with shuffled options
+let answers = new Array(TOTAL).fill(null);
+let answered = new Array(TOTAL).fill(false);
+let SHUFFLED = [];
 
-// Fisher-Yates shuffle
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function $(id){ return document.getElementById(id); }
+function SHW(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
+function AR(n){ return String(n).replace(/\d/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+
 function SHUFFLE(arr){
   const a = [...arr];
   for(let i = a.length-1; i > 0; i--){
@@ -279,44 +416,54 @@ function SHUFFLE(arr){
   return a;
 }
 
+function SET_LANG(lang){
+  LANG = lang;
+  const t = T[lang];
+  const html = document.documentElement;
+  html.setAttribute('lang', t.lang);
+  html.setAttribute('dir', t.dir);
+  // Flip input text-align
+  document.getElementById('student-name').style.textAlign = t.optAlign;
+  // Populate name screen
+  $('wt').textContent = t.welcomeTitle;
+  $('ws').innerHTML = t.welcomeSub;
+  $('lbl-name').textContent = t.labelName;
+  $('student-name').placeholder = t.placeholder;
+  $('btn-start').textContent = t.btnStart;
+  $('saving-txt').textContent = t.saving;
+}
+
 function PREPARE_QUESTIONS(){
-  // Shuffle question order
   const shuffledQs = SHUFFLE(QS);
-  // For each question, shuffle its options and track new correct answer index
   SHUFFLED = shuffledQs.map(q => {
+    const src = LANG === 'en' ? { ...q, q: q.en.q, o: q.en.o, fb: q.en.fb } : q;
     const indices = SHUFFLE([0,1,2,3]);
-    const newOptions = indices.map(i => q.o[i]);
-    const newCorrect = indices.indexOf(q.a);
-    return { ...q, o: newOptions, a: newCorrect };
+    const newOptions = indices.map(i => src.o[i]);
+    const newCorrect = indices.indexOf(src.a !== undefined ? src.a : q.a);
+    return { ...src, o: newOptions, a: newCorrect };
   });
 }
 
-// ═══════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════
-function $(id){ return document.getElementById(id); }
-function SHW(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
-
 function CHK(){
-  const v = $('student-name').value.trim();
-  $('btn-start').disabled = v.length < 2;
+  $('btn-start').disabled = $('student-name').value.trim().length < 2;
 }
 
 function START(){
   studentName = $('student-name').value.trim();
   curQ = 0;
-  answers = new Array(15).fill(null);
-  answered = new Array(15).fill(false);
+  answers = new Array(TOTAL).fill(null);
+  answered = new Array(TOTAL).fill(false);
   PREPARE_QUESTIONS();
   SHW('scr-quiz');
   RenderQ();
 }
 
 function RenderQ(){
+  const t = T[LANG];
   const q = SHUFFLED[curQ];
-  const pct = (curQ / 15) * 100;
+  const pct = (curQ / TOTAL) * 100;
   $('qpf').style.width = pct + '%';
-  $('qctr').textContent = 'السؤال ' + AR(curQ+1) + ' من ١٥';
+  $('qctr').textContent = t.counter(curQ + 1, TOTAL);
 
   let html = `<div class="q-card">
     <div class="q-emoji">${q.e}</div>
@@ -330,22 +477,20 @@ function RenderQ(){
     } else if(answers[curQ] === i){
       cls += ' selected';
     }
-    html += `<button class="${cls}" data-idx="${i}">${opt}</button>`;
+    const align = t.optAlign;
+    html += `<button class="${cls}" data-idx="${i}" style="text-align:${align}">${opt}</button>`;
   });
 
-  html += `<div class="q-feedback ${answered[curQ]?'show':''}" id="fb">${q.fb}</div>`;
-  html += `</div>`;
-
+  html += `<div class="q-feedback ${answered[curQ]?'show':''}">${q.fb}</div></div>`;
   $('q-area').innerHTML = html;
 
-  // Next button label
-  const isLast = curQ === 14;
-  $('btn-next').textContent = isLast ? 'إنهاء الاختبار ✓' : 'التالي ←';
+  const isLast = curQ === TOTAL - 1;
+  $('btn-next').textContent = isLast ? t.btnFinish : t.btnNext;
   $('btn-next').disabled = answers[curQ] === null;
 }
 
 function SEL(i){
-  if(answered[curQ]) return; // locked after reveal
+  if(answered[curQ]) return;
   answers[curQ] = i;
   answered[curQ] = true;
   $('btn-next').disabled = false;
@@ -353,38 +498,28 @@ function SEL(i){
 }
 
 function NEXT(){
-  if(curQ < 14){
-    curQ++;
-    RenderQ();
-    window.scrollTo(0,0);
-  } else {
-    SUBMIT();
-  }
+  if(curQ < TOTAL - 1){ curQ++; RenderQ(); window.scrollTo(0,0); }
+  else { SUBMIT(); }
 }
 
 function SUBMIT(){
   SHW('scr-submit');
-  const correct = answers.filter((a,i)=> a === SHUFFLED[i].a).length;
-  const pct = Math.round((correct/15)*100);
+  const correct = answers.filter((a,i) => a === SHUFFLED[i].a).length;
+  const pct = Math.round((correct / TOTAL) * 100);
   const pass = pct >= 60;
 
-  // Build wrong questions list
   const wrongQs = [];
-  answers.forEach((a,i)=>{
+  answers.forEach((a,i) => {
     if(a !== SHUFFLED[i].a){
-      wrongQs.push({
-        num: i+1,
-        q: SHUFFLED[i].q,
-        chosen: SHUFFLED[i].o[a],
-        correct: SHUFFLED[i].o[SHUFFLED[i].a]
-      });
+      wrongQs.push({ num:i+1, q:SHUFFLED[i].q, chosen:SHUFFLED[i].o[a], correct:SHUFFLED[i].o[SHUFFLED[i].a] });
     }
   });
 
   const payload = {
     name: studentName,
+    lang: LANG,
     score: correct,
-    total: 15,
+    total: TOTAL,
     pct: pct,
     pass: pass,
     timestamp: new Date().toISOString(),
@@ -393,7 +528,6 @@ function SUBMIT(){
     wrongQuestions: wrongQs.map(w=>({num:w.num, q:w.q, chosen:w.chosen, correct:w.correct}))
   };
 
-  // Save to Firebase
   function saveAndShow(){
     if(window._FB_READY && window._db){
       try {
@@ -401,55 +535,53 @@ function SUBMIT(){
         const newRef = window._push(dbRef);
         window._set(newRef, payload).then(()=>{
           ShowResult(correct, pct, pass, wrongQs);
-        }).catch(()=>{
-          ShowResult(correct, pct, pass, wrongQs);
-        });
-      } catch(e){
-        ShowResult(correct, pct, pass, wrongQs);
-      }
+        }).catch(()=>{ ShowResult(correct, pct, pass, wrongQs); });
+      } catch(e){ ShowResult(correct, pct, pass, wrongQs); }
     } else {
-      // Firebase not configured yet — still show result
       setTimeout(()=>ShowResult(correct, pct, pass, wrongQs), 800);
     }
   }
 
-  // Wait briefly for Firebase module to load if needed
   if(window._FB_READY){ saveAndShow(); }
   else { setTimeout(saveAndShow, 1500); }
 }
 
 function ShowResult(correct, pct, pass, wrongQs){
+  const t = T[LANG];
   SHW('scr-result');
   $('res-icon').textContent = pass ? '🎉' : '📖';
-  $('res-score').textContent = correct + ' / 15';
-  $('res-label').textContent = 'النتيجة: ' + AR(pct) + '%';
+  $('res-score').textContent = correct + ' / ' + TOTAL;
+  $('res-label').textContent = t.resultLabel(LANG === 'ar' ? pct : pct);
   $('res-badge').innerHTML = pass
-    ? `<div class="pass-badge">✅ ناجح — أحسنت!</div>`
-    : `<div class="fail-badge">❌ لم تتجاوز الحد الأدنى — راجع المواد وحاول مجدداً</div>`;
+    ? `<div class="pass-badge">${t.pass}</div>`
+    : `<div class="fail-badge">${t.fail}</div>`;
+  $('wrong-hdr').textContent = t.wrongHdr;
+  $('saved-txt').textContent = t.saved;
 
   if(wrongQs.length > 0){
     $('res-wrong-card').style.display = 'block';
-    $('res-wrong-list').innerHTML = wrongQs.map(w=>
+    $('res-wrong-list').innerHTML = wrongQs.map((w,i) =>
       `<div class="wrong-item">
-        <strong>س${w.num}: ${w.q}</strong>
-        إجابتك: ${w.chosen}<br>
-        الصحيح: <span style="color:#1E8449;font-weight:700">${w.correct}</span>
+        <strong>${t.qPrefix}${w.num}: ${w.q}</strong>
+        ${t.yourAns}: ${w.chosen}<br>
+        ${t.correct}: <span style="color:#1E8449;font-weight:700">${w.correct}</span>
       </div>`
     ).join('');
   }
 }
 
-// Arabic numerals helper
-function AR(n){
-  return String(n).replace(/\d/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]);
-}
-
-// Attach event listeners after DOM ready
 document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('btn-lang-ar').addEventListener('click', function(){
+    SET_LANG('ar');
+    SHW('scr-name');
+  });
+  document.getElementById('btn-lang-en').addEventListener('click', function(){
+    SET_LANG('en');
+    SHW('scr-name');
+  });
   document.getElementById('student-name').addEventListener('input', CHK);
   document.getElementById('btn-start').addEventListener('click', START);
   document.getElementById('btn-next').addEventListener('click', NEXT);
-  // Delegated click for answer options (generated dynamically)
   document.getElementById('q-area').addEventListener('click', function(e){
     const btn = e.target.closest('button.opt');
     if(btn) SEL(parseInt(btn.dataset.idx));
